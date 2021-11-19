@@ -474,6 +474,7 @@ os_thread_signal_init(os_signal_handler handler)
         goto fail1;
     }
 
+    os_printf("MMAP %p %u\n", map_addr, (unsigned int)map_size);
     /* Initialize signal alternate stack */
     memset(map_addr, 0, map_size);
     sigalt_stack_info.ss_sp = map_addr;
