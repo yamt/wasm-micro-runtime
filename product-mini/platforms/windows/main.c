@@ -444,7 +444,7 @@ main(int argc, char *argv[])
             printf("%s\n", wasm_runtime_get_exception(wasm_module_inst));
             goto fail4;
         }
-        debug_port = wasm_runtime_start_debug_instance(exec_env);
+        debug_port = wasm_runtime_start_debug_instance(exec_env, -1);
         if (debug_port == 0) {
             printf("Failed to start debug instance\n");
             goto fail4;
