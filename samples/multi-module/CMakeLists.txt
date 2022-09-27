@@ -40,7 +40,7 @@ if (NOT CMAKE_BUILD_TYPE)
 endif ()
 
 set(WAMR_BUILD_INTERP 1)
-set(WAMR_BUILD_AOT 0)
+set(WAMR_BUILD_AOT 1)
 set(WAMR_BUILD_JIT 0)
 set(WAMR_BUILD_LIBC_BUILTIN 1)
 set(WAMR_BUILD_LIBC_WASI 1)
@@ -145,6 +145,24 @@ ExternalProject_Add(WASM_MODULE
 ################ NATIVE
 include_directories(${CMAKE_CURRENT_LIST_DIR}/src)
 include (${SHARED_DIR}/utils/uncommon/shared_uncommon.cmake)
+
+find_program(WAMRC wamrc REQUIRED)
+set(wasm_files
+	mA.wasm
+	mB.wasm
+	mC.wasm
+	mD.wasm
+	mE.wasm
+)
+foreach(wasm ${wasm_files})
+    get_filename_component(f ${wasm} NAME_WLE)
+    set(aot "${f}.wasm-aot")
+    add_custom_command(OUTPUT ${aot}
+        COMMAND ${WAMRC} -o ${aot} ${CMAKE_BINARY_DIR}/${wasm}
+        MAIN_DEPENDENCY ${CMAKE_BINARY_DIR}/${wasm}
+    )
+    add_custom_target(build-${aot} ALL DEPENDS ${aot})
+endforeach()
 
 add_executable(multi_module src/main.c ${UNCOMMON_SHARED_SOURCE})
 

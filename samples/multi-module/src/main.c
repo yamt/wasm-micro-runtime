@@ -10,9 +10,9 @@ static char *
 build_module_path(const char *module_name)
 {
     const char *module_search_path = ".";
-    const char *format = "%s/%s.wasm";
+    const char *format = "%s/%s.wasm-aot";
     int sz = strlen(module_search_path) + strlen("/") + strlen(module_name)
-             + strlen(".wasm") + 1;
+             + strlen(".wasm-aot") + 1;
     char *wasm_file_name = BH_MALLOC(sz);
     if (!wasm_file_name) {
         return NULL;
