@@ -158,6 +158,14 @@ aot_add_llvm_func(const AOTCompContext *comp_ctx, LLVMModuleRef module,
         }
     }
 
+    if (!comp_ctx->is_jit_mode) {
+        unsigned int kind =
+            LLVMGetEnumAttributeKindForName("noinline", strlen("noinline"));
+        LLVMAttributeRef attr_noinline =
+            LLVMCreateEnumAttribute(comp_ctx->context, kind, 0);
+        LLVMAddAttributeAtIndex(func, LLVMAttributeFunctionIndex,
+                                attr_noinline);
+    }
 fail:
     wasm_runtime_free(param_types);
     return func;
