@@ -69,7 +69,7 @@ Users can turn those features on or off by using compilation options. If a relev
 
 | Proposal                   | >= Phase 4 | Compilation Option            |
 | -------------------------- | ---------- | ----------------------------- |
-| Machine Learning (wasi-nn) | No         | `WAMR_BUILD_WASI_NN`          |
+| Machine Learning (wasi-nn) | No         | `WAMR_BUILD_WASI_NN` and `WAMR_BUILD_WASI_EPHEMERAL_NN` |
 | Threads                    | No         | `WAMR_BUILD_LIB_WASI_THREADS` |
 
 ## Unimplemented WASI Proposals
