@@ -7,7 +7,6 @@
 #include "logger.h"
 #include "wasi_nn.h"
 
-#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -146,8 +145,7 @@ run_inference(execution_target target, float *input, uint32_t *input_size,
             break;
         }
 
-        assert(((*output_size) % 4) == 0);
-        offset += *output_size / 4;
+        offset += *output_size;
     }
     *output_size = offset;
     return out_tensor;
