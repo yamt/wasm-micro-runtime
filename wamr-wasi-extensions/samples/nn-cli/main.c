@@ -10,6 +10,7 @@
 #include <fcntl.h>
 #include <getopt.h>
 #include <inttypes.h>
+#include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -466,6 +467,38 @@ static const struct option longopts[] = {
     },
 };
 
+static void (*thread_fn)(char *options);
+
+static void *
+thread_start(void *vp)
+{
+    fprintf(stderr, "calling a function on thread %ju\n",
+            (uintmax_t)pthread_self());
+    thread_fn(vp);
+    return NULL;
+}
+
+static void
+call_on_thread(void (*fn)(char *options), void *vp)
+{
+    pthread_t t;
+    int ret;
+    thread_fn = fn;
+    ret = pthread_create(&t, NULL, thread_start, vp);
+    if (ret != 0) {
+        fprintf(stderr, "pthread_create failed: %s\n", strerror(ret));
+    }
+#if 0
+    void *status;
+    ret = pthread_join(t, &status);
+    if (ret != 0) {
+        fprintf(stderr, "pthread_join failed: %s\n", strerror(ret));
+    }
+#else
+    usleep(1000000);
+#endif
+}
+
 int
 main(int argc, char **argv)
 {
@@ -475,19 +508,19 @@ main(int argc, char **argv)
     while ((ch = getopt_long(argc, argv, "", longopts, &longidx)) != -1) {
         switch (ch) {
             case opt_load_graph:
-                load_graph(optarg);
+                call_on_thread(load_graph, optarg);
                 break;
             case opt_init_execution_context:
-                init_execution_context(optarg ? optarg : "");
+                call_on_thread(init_execution_context, optarg ? optarg : "");
                 break;
             case opt_set_input:
-                set_input(optarg);
+                call_on_thread(set_input, optarg);
                 break;
             case opt_compute:
-                compute(optarg ? optarg : "");
+                call_on_thread(compute, optarg ? optarg : "");
                 break;
             case opt_get_output:
-                get_output(optarg ? optarg : "");
+                call_on_thread(get_output, optarg ? optarg : "");
                 break;
             default:
                 exit(2);
