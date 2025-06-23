@@ -21,7 +21,7 @@ samples/nn
 cmake --build build-app-nn
 
 cmake -B build-app-nn-cli \
--DCMAKE_TOOLCHAIN_FILE=${WASI_SDK}/share/cmake/wasi-sdk-pthread.cmake \
+-DCMAKE_TOOLCHAIN_FILE=${WASI_SDK}/share/cmake/wasi-sdk.cmake \
 -DCMAKE_PREFIX_PATH=${PREFIX} \
 samples/nn-cli
 cmake --build build-app-nn-cli
