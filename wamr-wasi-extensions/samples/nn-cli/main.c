@@ -23,22 +23,6 @@
 static struct map graphs;
 static struct map contexts;
 
-static uint8_t *
-bufpg(void)
-{
-    static uint8_t *p;
-    if (p != NULL
-        && (uintptr_t)p / 65536 + 1 == __builtin_wasm_memory_size(0)) {
-        return p;
-    }
-    unsigned long l = __builtin_wasm_memory_grow(0, 1);
-    if (l == -1) {
-        __builtin_trap();
-    }
-    p = (void *)(l * 65536);
-    return p;
-}
-
 static void
 load_graph(char *options)
 {
@@ -414,19 +398,13 @@ get_output(char *options)
     wasi_ephemeral_nn_graph_execution_context c =
         map_get(&contexts, context_id);
     void *resultbuf = NULL;
-    size_t resultbufsz = 1;
+    size_t resultbufsz = 256;
     uint32_t resultsz;
-    uint8_t *p = bufpg();
 retry:
-#if 0
     resultbuf = realloc(resultbuf, resultbufsz);
     if (resultbuf == NULL) {
         exit(1);
     }
-#endif
-    fprintf(stderr, "bufpg %p\n", p);
-    fprintf(stderr, "size %lx\n", __builtin_wasm_memory_size(0));
-    resultbuf = p + 65536 - 1;
     nnret =
         wasi_ephemeral_nn_get_output(c, 0, resultbuf, resultbufsz, &resultsz);
     if (nnret == wasi_ephemeral_nn_error_too_large) {
