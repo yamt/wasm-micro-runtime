@@ -132,7 +132,7 @@ if(WAMR_BUILD_WASI_NN_ONNX EQUAL 1)
     wasi_nn_onnx
     PUBLIC
       vmlib
-      onnxruntime
+      onnxruntime::onnxruntime
   )
 
   install(TARGETS wasi_nn_onnx DESTINATION lib)

@@ -22,6 +22,10 @@
 #   endif()
 
 # First try to find ONNX Runtime using the CMake config file
+find_package(onnxruntime CONFIG QUIET)
+if(onnxruntime_FOUND)
+  return()
+endif()
 
 # If not found via CMake config, try to find manually
 find_path(onnxruntime_INCLUDE_DIR
